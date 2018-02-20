@@ -41,8 +41,8 @@ airquality_file = os.path.join(data_dir, "AirQualityUCI.csv")
 # read in that strange European CSV data, semi-colon separated, with commas for decimal points
 aqdf = pd.read_csv(airquality_file, sep=";", decimal=",", header=0)
 
-# remove date, time, and last two NaN columns using drop
-# plus, looking T the Non Metanic HydroCarbons column, NMHC(GT), it barely has anything useful so drop it
+# remove date, time, and the last two NaN columns using drop
+# plus, looking at the Non Metanic HydroCarbons column, NMHC(GT), it barely has anything useful so drop it
 aqdf.drop(["Date", "Time", "NMHC(GT)", "Unnamed: 15", "Unnamed: 16"], axis=1, inplace=True)
 
 # at lot of all NaN rows at the end - drop these
@@ -75,13 +75,13 @@ y = x_scaled[:, 2]                  # y is just Benzine column - the target
 x = np.delete(x_scaled, 2, axis=1)  # x is everything else - the input
 
 # split data into first 70% for training, and last 30% for testing
-# a bit crude - should use cross_validation.train_test_split
+# a bit crude - should use cross_validation.train_test_split or KFold
 train_size = int(0.7 * x.shape[0])
 x_train, x_test, y_train, y_test = x[0:train_size], x[train_size:], y[0:train_size], y[train_size:]
 
 # Set up and run the model
 
-# autoencoder like structure 11 features -> 8 latent space -> 1 output
+# regression network with 11 features -> 8 latent space -> 1 output
 readings = Input(shape=(11, ))
 encoded = Dense(8, activation='relu', kernel_initializer='glorot_uniform')(readings)
 decoded = Dense(1, kernel_initializer='glorot_uniform')(encoded)
